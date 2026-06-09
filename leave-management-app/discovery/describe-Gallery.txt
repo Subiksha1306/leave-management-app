@@ -1,0 +1,4 @@
+Control Gallery
+Family: Classic
+
+... (see earlier describe_control output)

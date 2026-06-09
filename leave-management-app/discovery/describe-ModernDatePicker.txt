@@ -1,0 +1,4 @@
+Control ModernDatePicker
+Family: React
+
+... (see earlier describe_control output)

@@ -1,0 +1,10 @@
+﻿The Experimental sources layout is deprecated, and will be removed in a future release. Consider explicitly specifying `--layout SourceCode` to enable the latest supported layout.
+Pack from C:\Users\subik\Desktop\LeaveManagement\unpacked-app --> C:\Users\subik\Desktop\LeaveManagement\test.msapp
+Microsoft PowerPlatform CLI
+Version: 2.8.1+ga4eb71c (.NET 10.0.8)
+Online documentation: https://aka.ms/PowerPlatformCLI
+Feedback, Suggestions, Issues: https://github.com/microsoft/powerplatform-build-tools/discussions
+
+Error: ApplyLeave.fx.yaml(8,18,8,18): Error   PA3003: Parse error: Expected either '=' for a single line expression or '|' to begin a multiline expression
+
+

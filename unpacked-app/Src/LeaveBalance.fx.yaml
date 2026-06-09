@@ -1,0 +1,29 @@
+LeaveBalance As screen:
+
+    OnVisible: =Set(selectedLeaveType, Blank());
+
+    LeaveBalance_Title As text:
+        Text: ="Leave Balance"
+        X: =20
+        Y: =20
+        Size: =20
+
+    LeaveGallery As gallery:
+        Items: =colLeaveTypes
+        X: =20
+        Y: =60
+        Width: =760
+        Height: =600
+        TemplateSize: =120
+        LeaveGallery_Template As galleryTemplate:
+            LeaveName As text:
+                Text: =ThisItem.DisplayName
+                X: =20
+                Y: =10
+                Size: =16
+
+            LeaveBalance_BalanceText As text:
+                Text: ="Balance: " & Text(Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = ThisItem.Key, BalanceDays), 0)) & " days"
+                X: =20
+                Y: =40
+                Size: =14

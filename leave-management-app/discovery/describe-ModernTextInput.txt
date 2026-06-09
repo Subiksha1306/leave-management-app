@@ -1,0 +1,4 @@
+Control ModernTextInput
+Family: React
+
+... (see earlier describe_control output)

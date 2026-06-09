@@ -1,0 +1,29 @@
+﻿LeaveBalance As screen:
+
+    OnVisible: =Set(selectedLeaveType, Blank());
+
+    LeaveBalance_Title As moderntext:
+        Text: ="Leave Balance"
+        Color: =TextColor
+        Size: =20
+        FontWeight: =FontWeight.Semibold
+
+    LeaveGallery As gallery:
+        Variant: Vertical
+        Items: =colLeaveTypes
+        TemplateSize: =120
+        Children:
+          - LeaveBalance_Card As groupcontainer:
+              Variant: AutoLayout
+              PaddingTop: =12
+              Children:
+                - LeaveName As moderntext:
+                    Text: =ThisItem.DisplayName
+                    FontWeight: =FontWeight.Semibold
+                    Color: =TextColor
+                - LeaveBalance_BalanceText As moderntext:
+                    Text: ="Balance: " & Text(Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = ThisItem.Key, BalanceDays), 0)) & " days"
+                    Color: =TextColor
+                - BalanceProgress As progress:
+                    Value: =If(Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = ThisItem.Key, BalanceDays),0) = 0, 0, 1 - (Sum(Filter(colLeaveRequests, EmployeeId = currentUserId && Status = "Approved" && LeaveTypeKey = ThisItem.Key), Days) / (Sum(Filter(colLeaveRequests, EmployeeId = currentUserId && Status = "Approved" && LeaveTypeKey = ThisItem.Key), Days) + Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = ThisItem.Key, BalanceDays),0))))
+                    Width: =Parent.Width - 48

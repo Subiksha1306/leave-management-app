@@ -1,0 +1,4 @@
+Control Progress
+Family: FluentV9
+
+... (see earlier describe_control output)

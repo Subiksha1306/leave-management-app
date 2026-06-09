@@ -1,0 +1,4 @@
+Control ModernCard
+Family: React
+
+... (see earlier describe_control output)

@@ -1,0 +1,47 @@
+﻿ApplyLeave As screen:
+
+    Fill: =BackgroundColor
+    OnVisible: =Set(varLeaveType, Blank()); Set(varFromDate, Today()); Set(varToDate, Today()); Set(varReason, "");
+
+    TitleText As text:
+        Text: ="Apply for Leave"
+        X: =20
+        Y: =20
+        Size: =20
+
+    cmbLeaveType As combobox:
+        Items: =colLeaveTypes
+        X: =20
+        Y: =60
+        Width: =400
+        Height: =40
+        OnChange: =Set(varLeaveType, Self.Selected)
+
+    dpFrom As datepicker:
+        DefaultDate: =varFromDate
+        X: =20
+        Y: =120
+        Width: =200
+        OnChange: =Set(varFromDate, Self.SelectedDate)
+
+    dpTo As datepicker:
+        DefaultDate: =varToDate
+        X: =240
+        Y: =120
+        Width: =200
+        OnChange: =Set(varToDate, Self.SelectedDate)
+
+    txtReason As text:
+        Text: =varReason
+        X: =20
+        Y: =180
+        Width: =400
+        Height: =100
+
+    btnSubmit As button:
+        Text: ="Submit"
+        X: =20
+        Y: =300
+        Width: =120
+        Height: =40
+        OnSelect: =Collect(colLeaveRequests, {EmployeeId: currentUserId, LeaveTypeKey: varLeaveType.Key, FromDate: varFromDate, ToDate: varToDate, Days: DateDiff(varFromDate, varToDate, Days) + 1, Status: "Pending", SubmittedOn: Now(), Reason: varReason}); Notify("Submitted!", NotificationType.Success)

@@ -1,0 +1,4 @@
+Control ModernButton
+Family: React
+
+... (see earlier describe_control output)

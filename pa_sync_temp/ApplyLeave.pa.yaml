@@ -1,0 +1,100 @@
+﻿Screens:
+  ApplyLeave:
+    Properties:
+      Fill: =BackgroundColor
+      LoadingSpinnerColor: =PrimaryColor
+      OnVisible: |-
+        =Set(varLeaveType, Blank());
+        Set(varFromDate, Today());
+        Set(varToDate, Today());
+        Set(varReason, "");
+        Set(varRequestedDays, 1);
+    Children:
+      - ApplyLeave_Card:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            X: =20
+            Y: =20
+            Width: =960
+            Height: =600
+          Children:
+            - TitleText:
+                Control: ModernText
+                Properties:
+                  Text: ="Apply for Leave"
+                  Color: =TextColor
+                  Size: =20
+                  FontWeight: =FontWeight.Semibold
+                  PaddingLeft: =12
+            - cmbLeaveType:
+                Control: ModernCombobox
+                Properties:
+                  Items: =colLeaveTypes
+                  ItemDisplayText: =ThisItem.DisplayName
+                  DefaultSelectedItems: =If(IsBlank(varLeaveType), Blank(), Table(varLeaveType))
+                  InputTextPlaceholder: ="Select leave type"
+                  OnChange: =Set(varLeaveType, Self.Selected)
+            - dpFrom:
+                Control: ModernDatePicker
+                Properties:
+                  DefaultDate: =varFromDate
+                  OnChange: =Set(varFromDate, Self.SelectedDate)
+                  Placeholder: ="From"
+            - dpTo:
+                Control: ModernDatePicker
+                Properties:
+                  DefaultDate: =varToDate
+                  OnChange: =Set(varToDate, Self.SelectedDate)
+                  Placeholder: ="To"
+            - txtReason:
+                Control: ModernTextInput
+                Properties:
+                  Default: =varReason
+                  Placeholder: ="Reason for leave"
+                  OnChange: =Set(varReason, Self.Text)
+                  Type: =TextInputType.Multiline
+                  Height: =120
+            - DaysText:
+                Control: ModernText
+                Properties:
+                  Text: '="Days requested: " & Text(DateDiff(varFromDate, varToDate, Days) + 1)'
+                  Color: =TextColor
+            - BalanceText:
+                Control: ModernText
+                Properties:
+                  Text: |-
+                    =If(
+                      IsBlank(varLeaveType),
+                      "Available balance: -",
+                      "Available balance: " & Text(Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = varLeaveType.Key, BalanceDays),0))
+                    )
+                  Color: =TextColor
+            - btnSubmit:
+                Control: ModernButton
+                Properties:
+                  Text: ="Submit Request"
+                  BasePaletteColor: =PrimaryColor
+                  Color: =CardColor
+                  OnSelect: |-
+                    =If(
+                      isLoading,
+                      Notify("Please wait...", NotificationType.Information),
+                      If(
+                        IsBlank(varLeaveType),
+                        Notify("Please select a leave type.", NotificationType.Error),
+                        If(varToDate < varFromDate,
+                          Notify("End date must be on or after start date.", NotificationType.Error),
+                          If(
+                            Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = varLeaveType.Key, BalanceDays),0) < (DateDiff(varFromDate, varToDate, Days) + 1),
+                            Notify("Insufficient balance for selected leave.", NotificationType.Error),
+                            With({nextId: If(CountRows(colLeaveRequests) = 0, 1001, Max(colLeaveRequests, Id) + 1)},
+                              Collect(colLeaveRequests, {Id: nextId, EmployeeId: currentUserId, LeaveTypeKey: varLeaveType.Key, FromDate: varFromDate, ToDate: varToDate, Days: DateDiff(varFromDate, varToDate, Days) + 1, Status: "Pending", ManagerId: LookUp(colEmployees, Id = currentUserId, ManagerId), SubmittedOn: Now(), Reason: varReason});
+                              Notify("Leave request submitted.", NotificationType.Success);
+                              Set(varLeaveType, Blank()); Set(varFromDate, Today()); Set(varToDate, Today()); Set(varReason, "")
+                            )
+                          )
+                        )
+                      )
+                    )
+

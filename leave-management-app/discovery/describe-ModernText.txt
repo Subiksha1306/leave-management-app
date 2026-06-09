@@ -1,0 +1,4 @@
+Control ModernText
+Family: React
+
+... (see earlier describe_control output)

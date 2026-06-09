@@ -1,0 +1,33 @@
+﻿Dashboard As screen:
+
+    OnVisible: =Set(isLoading, true); Set(myTotalBalance, Sum(Filter(colLeaveBalances, EmployeeId = currentUserId), BalanceDays)); ClearCollect(colMyRecentRequests, Filter(colLeaveRequests, EmployeeId = currentUserId)); ClearCollect(colQuickActions, Table({Key: "ApplyLeave", Label: "Apply Leave"}, {Key: "MyLeaves", Label: "My Leaves"})); Set(isLoading, false);
+
+    HeaderText As moderntext:
+        Text: ="Dashboard"
+        Color: =TextColor
+        Size: =24
+        X: =16
+        Y: =16
+
+    BalanceCard As moderncard:
+        Title: ="Leave Balance"
+        X: =16
+        Y: =56
+        Width: =320
+        Height: =140
+
+    QuickActionsGallery As gallery:
+        Variant: Vertical
+        X: =360
+        Y: =56
+        Width: =420
+        Height: =140
+        Items: =colQuickActions
+
+    RecentRequestsGrid As moderndatagrid:
+        X: =16
+        Y: =220
+        Width: =764
+        Height: =320
+        Items: =colMyRecentRequests
+        OnChange: =Set(selectedRequest, RecentRequestsGrid.Selected)
