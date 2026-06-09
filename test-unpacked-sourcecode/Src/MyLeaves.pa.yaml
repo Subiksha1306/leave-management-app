@@ -1,0 +1,42 @@
+﻿Screens:
+  MyLeaves:
+    Properties:
+      OnVisible: |-
+        =ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId));
+    Children:
+      - MyLeaves_Title:
+          Control: ModernText
+          Properties:
+            Text: ="My Leaves"
+            Color: =TextColor
+            FontWeight: =FontWeight.Bold
+            Size: =24
+            X: =16
+            Y: =16
+      - Refresh:
+          Control: ModernButton
+          Properties:
+            Text: ="Refresh"
+            BasePaletteColor: =PrimaryColor
+            Color: =RGBA(255,255,255,1)
+            X: =16
+            Y: =56
+            OnSelect: =ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId))
+      - LeavesGrid:
+          Control: ModernDataGrid
+          Properties:
+            Items: =colMyLeaves
+            X: =16
+            Y: =100
+            Width: =Parent.Width - 32
+            Height: =560
+            OnChange: =Set(selectedRequest, LeavesGrid.Selected)
+      - SelectedText:
+          Control: ModernText
+          Properties:
+            Text: '="Selected: " & If(!IsBlank(selectedRequest), selectedRequest.LeaveTypeKey & " (" & selectedRequest.Status & ")", "No request selected")'
+            Color: =TextColor
+            X: =16
+            Y: =680
+            Size: =14
+

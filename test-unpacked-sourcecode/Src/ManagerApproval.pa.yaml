@@ -1,0 +1,104 @@
+﻿Screens:
+  ManagerApproval:
+    Properties:
+      OnVisible: |-
+        =Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId)); Set(selectedRequest, Blank()); Set(showRejectModal, false); Set(rejectReason, "");
+      Fill: =BackgroundColor
+    Children:
+      - ManagerApproval_Title:
+          Control: ModernText
+          Properties:
+            Text: ="Manager Approval"
+            Color: =TextColor
+            Size: =20
+            X: =20
+            Y: =20
+      - RequestsGrid:
+          Control: ModernDataGrid
+          Properties:
+            X: =20
+            Y: =70
+            Width: =1200
+            Height: =500
+            Items: =ManagerQueue
+            OnChange: =Set(selectedRequest, RequestsGrid.Selected)
+      - ApproveButton:
+          Control: ModernButton
+          Properties:
+            Text: ="Approve"
+            X: =20
+            Y: =590
+            Width: =120
+            BasePaletteColor: =PrimaryColor
+            Color: =RGBA(255,255,255,1)
+            OnSelect: |-
+              =If(
+                IsBlank(selectedRequest),
+                Notify("Select a request to approve", NotificationType.Error),
+                Patch(colLeaveRequests, LookUp(colLeaveRequests, Id = selectedRequest.Id), {Status: "Approved"});
+                Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
+                Notify("Request approved", NotificationType.Success)
+              )
+      - RejectButton:
+          Control: ModernButton
+          Properties:
+            Text: ="Reject"
+            X: =150
+            Y: =590
+            Width: =120
+            BasePaletteColor: =RGBA(255,90,60,1)
+            Color: =RGBA(255,255,255,1)
+            OnSelect: =If(IsBlank(selectedRequest), Notify("Select a request to reject", NotificationType.Error), Set(showRejectModal, true); Set(rejectReason, ""))
+      - RejectModal:
+          Control: GroupContainer
+          Variant: ManualLayout
+          Properties:
+            Visible: =showRejectModal
+            X: =400
+            Y: =200
+            Width: =600
+            Height: =300
+          Children:
+            - RejectTitle:
+                Control: ModernText
+                Properties:
+                  Text: ="Reject Request"
+                  Size: =18
+                  X: =20
+                  Y: =20
+            - RejectReasonInput:
+                Control: ModernTextInput
+                Properties:
+                  Placeholder: ="Enter rejection reason"
+                  X: =20
+                  Y: =60
+                  Width: =560
+                  Default: =rejectReason
+                  OnChange: =Set(rejectReason, Self.Text)
+            - ConfirmReject:
+                Control: ModernButton
+                Properties:
+                  Text: ="Confirm Reject"
+                  X: =20
+                  Y: =220
+                  Width: =160
+                  BasePaletteColor: =RGBA(255,90,60,1)
+                  Color: =RGBA(255,255,255,1)
+                  OnSelect: |-
+                    =If(
+                      IsBlank(rejectReason),
+                      Notify("Provide a reason to reject", NotificationType.Error),
+                      Patch(colLeaveRequests, LookUp(colLeaveRequests, Id = selectedRequest.Id), {Status: "Rejected"});
+                      Set(showRejectModal, false);
+                      Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
+                      Notify("Request rejected", NotificationType.Success)
+                    )
+            - CancelReject:
+                Control: ModernButton
+                Properties:
+                  Text: ="Cancel"
+                  X: =200
+                  Y: =220
+                  Width: =120
+                  OnSelect: =Set(showRejectModal, false)
+
