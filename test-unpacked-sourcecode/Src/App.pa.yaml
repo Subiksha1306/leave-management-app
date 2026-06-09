@@ -51,7 +51,7 @@ App:
 
       ClearCollect(colLeaveRequests, 
         ShowColumns(
-          AddColumns(LeaveRequests, "Id", ID), 
+          AddColumns(LeaveRequests_1, "Id", ID), 
           "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
         )
       );
