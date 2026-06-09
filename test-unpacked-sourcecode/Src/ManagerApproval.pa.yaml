@@ -1,4 +1,4 @@
-﻿Screens:
+Screens:
   ManagerApproval:
     Properties:
       OnVisible: |-
@@ -35,7 +35,13 @@
               =If(
                 IsBlank(selectedRequest),
                 Notify("Select a request to approve", NotificationType.Error),
-                Patch(colLeaveRequests, LookUp(colLeaveRequests, Id = selectedRequest.Id), {Status: "Approved"});
+                Patch(LeaveRequests, LookUp(LeaveRequests, ID = selectedRequest.Id), {Status: "Approved"});
+                ClearCollect(colLeaveRequests,
+                  ShowColumns(
+                    AddColumns(LeaveRequests, "Id", ID),
+                    "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+                  )
+                );
                 Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
                 Notify("Request approved", NotificationType.Success)
               )
@@ -88,7 +94,13 @@
                     =If(
                       IsBlank(rejectReason),
                       Notify("Provide a reason to reject", NotificationType.Error),
-                      Patch(colLeaveRequests, LookUp(colLeaveRequests, Id = selectedRequest.Id), {Status: "Rejected"});
+                      Patch(LeaveRequests, LookUp(LeaveRequests, ID = selectedRequest.Id), {Status: "Rejected", RejectionReason: rejectReason});
+                      ClearCollect(colLeaveRequests,
+                        ShowColumns(
+                          AddColumns(LeaveRequests, "Id", ID),
+                          "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+                        )
+                      );
                       Set(showRejectModal, false);
                       Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
                       Notify("Request rejected", NotificationType.Success)

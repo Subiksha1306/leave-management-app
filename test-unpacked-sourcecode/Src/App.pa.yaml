@@ -1,4 +1,4 @@
-﻿App:
+App:
   Properties:
     StartScreen: =Dashboard
     Formulas: |-
@@ -27,36 +27,32 @@
         );
 
     OnStart: |-
-      =// Mock data for initial development. Replace ClearCollect calls with real data source connections after discovery.
-      ClearCollect(colLeaveTypes,
-        Table(
-          {Id: 1, Key: "Annual", DisplayName: "Annual Leave"},
-          {Id: 2, Key: "Sick", DisplayName: "Sick Leave"},
-          {Id: 3, Key: "Unpaid", DisplayName: "Unpaid Leave"}
+      =// Read initial data from SharePoint lists into local collections
+      ClearCollect(colLeaveTypes, 
+        ShowColumns(
+          AddColumns(LeaveTypes, "DisplayName", Title), 
+          "ID", "Key", "DisplayName"
         )
       );
 
-      ClearCollect(colEmployees,
-        Table(
-          {Id: 1, DisplayName: "Alice Johnson", Email: "alice@contoso.com", ManagerId: 3},
-          {Id: 2, DisplayName: "Bob Lee", Email: "bob@contoso.com", ManagerId: 3},
-          {Id: 3, DisplayName: "Carol Smith", Email: "carol@contoso.com", ManagerId: 0}
+      ClearCollect(colEmployees, 
+        ShowColumns(
+          AddColumns(Employees, "Id", EmployeeId, "DisplayName", Title), 
+          "Id", "DisplayName", "Email", "ManagerId"
         )
       );
 
-      ClearCollect(colLeaveBalances,
-        Table(
-          {EmployeeId: 1, LeaveTypeKey: "Annual", BalanceDays: 12},
-          {EmployeeId: 1, LeaveTypeKey: "Sick", BalanceDays: 8},
-          {EmployeeId: 2, LeaveTypeKey: "Annual", BalanceDays: 5},
-          {EmployeeId: 2, LeaveTypeKey: "Sick", BalanceDays: 10}
+      ClearCollect(colLeaveBalances, 
+        ShowColumns(
+          AddColumns(LeaveBalances, "Id", EmployeeId), 
+          "EmployeeId", "LeaveTypeKey", "BalanceDays"
         )
       );
 
-      ClearCollect(colLeaveRequests,
-        Table(
-          {Id: 1001, EmployeeId: 1, LeaveTypeKey: "Annual", FromDate: Date(2026,6,01), ToDate: Date(2026,6,03), Days: 3, Status: "Pending", ManagerId: 3, SubmittedOn: Date(2026,5,01)},
-          {Id: 1002, EmployeeId: 2, LeaveTypeKey: "Sick", FromDate: Date(2026,5,20), ToDate: Date(2026,5,20), Days: 1, Status: "Approved", ManagerId: 3, SubmittedOn: Date(2026,5,19)}
+      ClearCollect(colLeaveRequests, 
+        ShowColumns(
+          AddColumns(LeaveRequests, "Id", ID), 
+          "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
         )
       );
 
