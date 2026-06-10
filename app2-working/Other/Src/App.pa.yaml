@@ -27,7 +27,7 @@ App:
         );
 
     OnStart: |-
-      // Auto-seed SharePoint lists if they are empty using bulk Table collects to prevent syntax issues
+      =// Auto-seed SharePoint lists if they are empty using bulk Table collects to prevent syntax issues
       If(CountRows(LeaveTypes) = 0,
         Collect(LeaveTypes,
           Table(

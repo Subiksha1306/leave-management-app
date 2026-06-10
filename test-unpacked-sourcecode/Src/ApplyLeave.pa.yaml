@@ -58,7 +58,8 @@ Screens:
             - DaysText:
                 Control: ModernText
                 Properties:
-                  Text: ="Days requested: " & Text(DateDiff(varFromDate, varToDate, Days) + 1)
+                  Text: |-
+                    ="Days requested: " & Text(DateDiff(varFromDate, varToDate, Days) + 1)
                   Color: =TextColor
             - BalanceText:
                 Control: ModernText
