@@ -58,7 +58,7 @@ Screens:
             - DaysText:
                 Control: ModernText
                 Properties:
-                  Text: '="Days requested: " & Text(DateDiff(varFromDate, varToDate, TimeUnit.Days) + 1)'
+                  Text: ="Days requested: " & Text(DateDiff(varFromDate, varToDate, Days) + 1)
                   Color: =TextColor
             - BalanceText:
                 Control: ModernText
@@ -86,15 +86,15 @@ Screens:
                         If(varToDate < varFromDate,
                           Notify("End date must be on or after start date.", NotificationType.Error),
                           If(
-                            Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = varLeaveType.Key, BalanceDays),0) < (DateDiff(varFromDate, varToDate, TimeUnit.Days) + 1),
+                            Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = varLeaveType.Key, BalanceDays),0) < (DateDiff(varFromDate, varToDate, Days) + 1),
                             Notify("Insufficient balance for selected leave.", NotificationType.Error),
                             Collect(LeaveRequests_1, {
-                              Title: "Leave Request",
+                              Title: LookUp(colEmployees, Id = currentUserId, DisplayName) & " - " & varLeaveType.DisplayName,
                               EmployeeId: currentUserId,
                               LeaveTypeKey: varLeaveType.Key,
                               FromDate: varFromDate,
                               ToDate: varToDate,
-                              Days: DateDiff(varFromDate, varToDate, TimeUnit.Days) + 1,
+                              Days: DateDiff(varFromDate, varToDate, Days) + 1,
                               Status: "Pending",
                               ManagerId: LookUp(colEmployees, Id = currentUserId, ManagerId),
                               SubmittedOn: Now(),

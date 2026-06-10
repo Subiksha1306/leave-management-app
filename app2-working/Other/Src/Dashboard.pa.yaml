@@ -1,8 +1,20 @@
-﻿Screens:
+Screens:
   Dashboard:
     Properties:
       OnVisible: |-
         =Set(isLoading, true);
+        ClearCollect(colLeaveBalances, 
+          ShowColumns(
+            AddColumns(LeaveBalances, "Id", EmployeeId), 
+            "EmployeeId", "LeaveTypeKey", "BalanceDays"
+          )
+        );
+        ClearCollect(colLeaveRequests, 
+          ShowColumns(
+            AddColumns(LeaveRequests_1, "Id", ID), 
+            "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+          )
+        );
         Set(myTotalBalance, Sum(Filter(colLeaveBalances, EmployeeId = currentUserId), BalanceDays));
         ClearCollect(colMyRecentRequests, Filter(colLeaveRequests, EmployeeId = currentUserId));
         ClearCollect(colQuickActions, Table({Key: "ApplyLeave", Label: "Apply Leave"}, {Key: "MyLeaves", Label: "My Leaves"}));
@@ -33,6 +45,16 @@
             Width: =420
             Height: =140
             Items: =colQuickActions
+          Children:
+            - ActionButton:
+                Control: ModernButton
+                Properties:
+                  Text: =ThisItem.Label
+                  Width: =Parent.TemplateWidth - 24
+                  Height: =40
+                  X: =12
+                  Y: =12
+                  OnSelect: =Navigate(If(ThisItem.Key = "ApplyLeave", ApplyLeave, MyLeaves))
       - RecentRequestsGrid:
           Control: ModernDataGrid
           Properties:
@@ -41,5 +63,4 @@
             Width: =764
             Height: =320
             Items: =colMyRecentRequests
-            OnChange: =Set(selectedRequest, RecentRequestsGrid.Selected)
 

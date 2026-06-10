@@ -23,11 +23,52 @@ App:
         If(
           fromDate = toDate,
           Text(fromDate, "mmmm d, yyyy"),
-          Text(fromDate, "mmmm d, yyyy") & " â€“ " & Text(toDate, "mmmm d, yyyy")
+          Text(fromDate, "mmmm d, yyyy") & " - " & Text(toDate, "mmmm d, yyyy")
         );
 
     OnStart: |-
-      =// Read initial data from SharePoint lists into local collections
+      // Auto-seed SharePoint lists if they are empty using bulk Table collects to prevent syntax issues
+      If(CountRows(LeaveTypes) = 0,
+        Collect(LeaveTypes,
+          Table(
+            {Title: "Annual Leave", Key: "Annual"},
+            {Title: "Sick Leave", Key: "Sick"},
+            {Title: "Unpaid Leave", Key: "Unpaid"}
+          )
+        )
+      );
+
+      If(CountRows(Employees) = 0,
+        Collect(Employees,
+          Table(
+            {Title: "Alice Johnson", EmployeeId: 1, Email: "alice@contoso.com", ManagerId: 3},
+            {Title: "Bob Lee", EmployeeId: 2, Email: "bob@contoso.com", ManagerId: 3},
+            {Title: "Carol Smith", EmployeeId: 3, Email: "carol@contoso.com", ManagerId: 0}
+          )
+        )
+      );
+
+      If(CountRows(LeaveBalances) = 0,
+        Collect(LeaveBalances,
+          Table(
+            {Title: "Alice Johnson - Annual", EmployeeId: 1, LeaveTypeKey: "Annual", BalanceDays: 12},
+            {Title: "Alice Johnson - Sick", EmployeeId: 1, LeaveTypeKey: "Sick", BalanceDays: 8},
+            {Title: "Bob Lee - Annual", EmployeeId: 2, LeaveTypeKey: "Annual", BalanceDays: 5},
+            {Title: "Bob Lee - Sick", EmployeeId: 2, LeaveTypeKey: "Sick", BalanceDays: 10}
+          )
+        )
+      );
+
+      If(CountRows(LeaveRequests_1) = 0,
+        Collect(LeaveRequests_1,
+          Table(
+            {Title: "Alice Johnson - Annual Request", EmployeeId: 1, LeaveTypeKey: "Annual", FromDate: Date(2026,6,01), ToDate: Date(2026,6,03), Days: 3, Status: "Pending", ManagerId: 3, SubmittedOn: Now(), Reason: "Family vacation"},
+            {Title: "Bob Lee - Sick Request", EmployeeId: 2, LeaveTypeKey: "Sick", FromDate: Date(2026,5,20), ToDate: Date(2026,5,20), Days: 1, Status: "Approved", ManagerId: 3, SubmittedOn: Now() - 10, Reason: "Doctor appointment"}
+          )
+        )
+      );
+
+      // Read data from SharePoint lists into local collections
       ClearCollect(colLeaveTypes, 
         ShowColumns(
           AddColumns(LeaveTypes, "DisplayName", Title), 
@@ -65,8 +106,16 @@ App:
       Set(SampleCardHeaderImage, "");
       Set(Progress, 0);
       Set(Descending, true);
-      Set(currentUserId, 1);
-      Set(currentUserIsManager, LookUp(colEmployees, Id = currentUserId, ManagerId) = 0);
+
+      // Dynamically resolve current user by email
+      Set(currentUserEmail, User().Email);
+      Set(currentUserRecord, LookUp(colEmployees, Email = currentUserEmail));
+      If(IsBlank(currentUserRecord),
+        // If not found in the list, default to Alice (EmployeeId = 1) for testing
+        Set(currentUserRecord, LookUp(colEmployees, Id = 1))
+      );
+      Set(currentUserId, Coalesce(currentUserRecord.Id, 1));
+      Set(currentUserIsManager, Coalesce(currentUserRecord.ManagerId, 0) = 0 || CountRows(Filter(colEmployees, ManagerId = currentUserId)) > 0);
 
 
 

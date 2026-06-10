@@ -1,8 +1,16 @@
-﻿Screens:
+Screens:
   LeaveBalance:
     Properties:
       OnVisible: |-
-        =Set(selectedLeaveType, Blank());
+        =Set(isLoading, true);
+        ClearCollect(colLeaveBalances, 
+          ShowColumns(
+            AddColumns(LeaveBalances, "Id", EmployeeId), 
+            "EmployeeId", "LeaveTypeKey", "BalanceDays"
+          )
+        );
+        Set(selectedLeaveType, Blank());
+        Set(isLoading, false);
     Children:
       - LeaveBalance_Title:
           Control: ModernText
@@ -33,7 +41,8 @@
                   - LeaveBalance_BalanceText:
                       Control: ModernText
                       Properties:
-                        Text: '="Balance: " & Text(Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = ThisItem.Key, BalanceDays), 0)) & " days"'
+                        Text: |-
+                          ="Balance: " & Text(Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = ThisItem.Key, BalanceDays), 0)) & " days"
                         Color: =TextColor
                   - BalanceProgress:
                       Control: Progress

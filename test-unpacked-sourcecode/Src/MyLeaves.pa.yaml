@@ -1,8 +1,16 @@
-﻿Screens:
+Screens:
   MyLeaves:
     Properties:
       OnVisible: |-
-        =ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId));
+        =Set(isLoading, true);
+        ClearCollect(colLeaveRequests, 
+          ShowColumns(
+            AddColumns(LeaveRequests_1, "Id", ID), 
+            "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+          )
+        );
+        ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId));
+        Set(isLoading, false);
     Children:
       - MyLeaves_Title:
           Control: ModernText
@@ -21,7 +29,17 @@
             Color: =RGBA(255,255,255,1)
             X: =16
             Y: =56
-            OnSelect: =ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId))
+            OnSelect: |-
+              =Set(isLoading, true);
+              ClearCollect(colLeaveRequests, 
+                ShowColumns(
+                  AddColumns(LeaveRequests_1, "Id", ID), 
+                  "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+                )
+              );
+              ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId));
+              Set(isLoading, false);
+              Notify("Leave history refreshed.", NotificationType.Success)
       - LeavesGrid:
           Control: ModernDataGrid
           Properties:
@@ -30,11 +48,11 @@
             Y: =100
             Width: =Parent.Width - 32
             Height: =560
-            OnChange: =Set(selectedRequest, LeavesGrid.Selected)
       - SelectedText:
           Control: ModernText
           Properties:
-            Text: '="Selected: " & If(!IsBlank(selectedRequest), selectedRequest.LeaveTypeKey & " (" & selectedRequest.Status & ")", "No request selected")'
+            Text: |-
+              ="Selected: " & If(!IsBlank(LeavesGrid.Selected), LeavesGrid.Selected.LeaveTypeKey & " (" & LeavesGrid.Selected.Status & ")", "No request selected")
             Color: =TextColor
             X: =16
             Y: =680

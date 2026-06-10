@@ -2,7 +2,17 @@ Screens:
   ManagerApproval:
     Properties:
       OnVisible: |-
-        =Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId)); Set(selectedRequest, Blank()); Set(showRejectModal, false); Set(rejectReason, "");
+        =Set(isLoading, true);
+        ClearCollect(colLeaveRequests,
+          ShowColumns(
+            AddColumns(LeaveRequests_1, "Id", ID),
+            "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+          )
+        );
+        Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
+        Set(showRejectModal, false);
+        Set(rejectReason, "");
+        Set(isLoading, false);
       Fill: =BackgroundColor
     Children:
       - ManagerApproval_Title:
@@ -21,7 +31,6 @@ Screens:
             Width: =1200
             Height: =500
             Items: =ManagerQueue
-            OnChange: =Set(selectedRequest, RequestsGrid.Selected)
       - ApproveButton:
           Control: ModernButton
           Properties:
@@ -33,16 +42,33 @@ Screens:
             Color: =RGBA(255,255,255,1)
             OnSelect: |-
               =If(
-                IsBlank(selectedRequest),
+                IsBlank(RequestsGrid.Selected),
                 Notify("Select a request to approve", NotificationType.Error),
-                Patch(LeaveRequests_1, LookUp(LeaveRequests_1, ID = selectedRequest.Id), {Status: "Approved"});
+                Set(isLoading, true);
+                Patch(LeaveRequests_1, LookUp(LeaveRequests_1, ID = RequestsGrid.Selected.Id), {Status: "Approved"});
+                With({
+                    currentBalance: LookUp(LeaveBalances, EmployeeId = RequestsGrid.Selected.EmployeeId && LeaveTypeKey = RequestsGrid.Selected.LeaveTypeKey)
+                },
+                    If(!IsBlank(currentBalance),
+                        Patch(LeaveBalances, currentBalance, {
+                            BalanceDays: Max(0, currentBalance.BalanceDays - RequestsGrid.Selected.Days)
+                        })
+                    )
+                );
                 ClearCollect(colLeaveRequests,
                   ShowColumns(
                     AddColumns(LeaveRequests_1, "Id", ID),
                     "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
                   )
                 );
+                ClearCollect(colLeaveBalances, 
+                  ShowColumns(
+                    AddColumns(LeaveBalances, "Id", EmployeeId), 
+                    "EmployeeId", "LeaveTypeKey", "BalanceDays"
+                  )
+                );
                 Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
+                Set(isLoading, false);
                 Notify("Request approved", NotificationType.Success)
               )
       - RejectButton:
@@ -54,7 +80,7 @@ Screens:
             Width: =120
             BasePaletteColor: =RGBA(255,90,60,1)
             Color: =RGBA(255,255,255,1)
-            OnSelect: =If(IsBlank(selectedRequest), Notify("Select a request to reject", NotificationType.Error), Set(showRejectModal, true); Set(rejectReason, ""))
+            OnSelect: =If(IsBlank(RequestsGrid.Selected), Notify("Select a request to reject", NotificationType.Error), Set(showRejectModal, true); Set(rejectReason, ""))
       - RejectModal:
           Control: GroupContainer
           Variant: ManualLayout
@@ -94,7 +120,8 @@ Screens:
                     =If(
                       IsBlank(rejectReason),
                       Notify("Provide a reason to reject", NotificationType.Error),
-                      Patch(LeaveRequests_1, LookUp(LeaveRequests_1, ID = selectedRequest.Id), {Status: "Rejected", RejectionReason: rejectReason});
+                      Set(isLoading, true);
+                      Patch(LeaveRequests_1, LookUp(LeaveRequests_1, ID = RequestsGrid.Selected.Id), {Status: "Rejected", RejectionReason: rejectReason});
                       ClearCollect(colLeaveRequests,
                         ShowColumns(
                           AddColumns(LeaveRequests_1, "Id", ID),
@@ -103,6 +130,7 @@ Screens:
                       );
                       Set(showRejectModal, false);
                       Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
+                      Set(isLoading, false);
                       Notify("Request rejected", NotificationType.Success)
                     )
             - CancelReject:
