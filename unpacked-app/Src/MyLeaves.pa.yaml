@@ -5,7 +5,7 @@ Screens:
         =Set(isLoading, true);
         ClearCollect(colLeaveRequests, 
           ShowColumns(
-            AddColumns(LeaveRequests_1, "Id", ID), 
+            AddColumns(LeaveRequests, "Id", ID), 
             "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
           )
         );
@@ -33,7 +33,7 @@ Screens:
               =Set(isLoading, true);
               ClearCollect(colLeaveRequests, 
                 ShowColumns(
-                  AddColumns(LeaveRequests_1, "Id", ID), 
+                  AddColumns(LeaveRequests, "Id", ID), 
                   "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
                 )
               );

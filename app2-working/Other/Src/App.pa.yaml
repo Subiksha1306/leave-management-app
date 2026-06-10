@@ -59,8 +59,8 @@ App:
         )
       );
 
-      If(CountRows(LeaveRequests_1) = 0,
-        Collect(LeaveRequests_1,
+      If(CountRows(LeaveRequests) = 0,
+        Collect(LeaveRequests,
           Table(
             {Title: "Alice Johnson - Annual Request", EmployeeId: 1, LeaveTypeKey: "Annual", FromDate: Date(2026,6,01), ToDate: Date(2026,6,03), Days: 3, Status: "Pending", ManagerId: 3, SubmittedOn: Now(), Reason: "Family vacation"},
             {Title: "Bob Lee - Sick Request", EmployeeId: 2, LeaveTypeKey: "Sick", FromDate: Date(2026,5,20), ToDate: Date(2026,5,20), Days: 1, Status: "Approved", ManagerId: 3, SubmittedOn: Now() - 10, Reason: "Doctor appointment"}
@@ -92,7 +92,7 @@ App:
 
       ClearCollect(colLeaveRequests, 
         ShowColumns(
-          AddColumns(LeaveRequests_1, "Id", ID), 
+          AddColumns(LeaveRequests, "Id", ID), 
           "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
         )
       );

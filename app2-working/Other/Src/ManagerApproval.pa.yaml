@@ -5,7 +5,7 @@ Screens:
         =Set(isLoading, true);
         ClearCollect(colLeaveRequests,
           ShowColumns(
-            AddColumns(LeaveRequests_1, "Id", ID),
+            AddColumns(LeaveRequests, "Id", ID),
             "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
           )
         );
@@ -45,7 +45,7 @@ Screens:
                 IsBlank(RequestsGrid.Selected),
                 Notify("Select a request to approve", NotificationType.Error),
                 Set(isLoading, true);
-                Patch(LeaveRequests_1, LookUp(LeaveRequests_1, ID = RequestsGrid.Selected.Id), {Status: "Approved"});
+                Patch(LeaveRequests, LookUp(LeaveRequests, ID = RequestsGrid.Selected.Id), {Status: "Approved"});
                 With({
                     currentBalance: LookUp(LeaveBalances, EmployeeId = RequestsGrid.Selected.EmployeeId && LeaveTypeKey = RequestsGrid.Selected.LeaveTypeKey)
                 },
@@ -57,7 +57,7 @@ Screens:
                 );
                 ClearCollect(colLeaveRequests,
                   ShowColumns(
-                    AddColumns(LeaveRequests_1, "Id", ID),
+                    AddColumns(LeaveRequests, "Id", ID),
                     "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
                   )
                 );
@@ -121,10 +121,10 @@ Screens:
                       IsBlank(rejectReason),
                       Notify("Provide a reason to reject", NotificationType.Error),
                       Set(isLoading, true);
-                      Patch(LeaveRequests_1, LookUp(LeaveRequests_1, ID = RequestsGrid.Selected.Id), {Status: "Rejected", RejectionReason: rejectReason});
+                      Patch(LeaveRequests, LookUp(LeaveRequests, ID = RequestsGrid.Selected.Id), {Status: "Rejected", RejectionReason: rejectReason});
                       ClearCollect(colLeaveRequests,
                         ShowColumns(
-                          AddColumns(LeaveRequests_1, "Id", ID),
+                          AddColumns(LeaveRequests, "Id", ID),
                           "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
                         )
                       );

@@ -89,7 +89,7 @@ Screens:
                           If(
                             Coalesce(LookUp(colLeaveBalances, EmployeeId = currentUserId && LeaveTypeKey = varLeaveType.Key, BalanceDays),0) < (DateDiff(varFromDate, varToDate, Days) + 1),
                             Notify("Insufficient balance for selected leave.", NotificationType.Error),
-                            Collect(LeaveRequests_1, {
+                             Collect(LeaveRequests, {
                               Title: LookUp(colEmployees, Id = currentUserId, DisplayName) & " - " & varLeaveType.DisplayName,
                               EmployeeId: currentUserId,
                               LeaveTypeKey: varLeaveType.Key,
@@ -103,7 +103,7 @@ Screens:
                             });
                             ClearCollect(colLeaveRequests,
                               ShowColumns(
-                                AddColumns(LeaveRequests_1, "Id", ID),
+                                AddColumns(LeaveRequests, "Id", ID),
                                 "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
                               )
                             );
