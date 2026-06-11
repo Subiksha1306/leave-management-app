@@ -5,14 +5,14 @@ Screens:
         =Set(isLoading, true);
         ClearCollect(colLeaveBalances, 
           ShowColumns(
-            AddColumns(LeaveBalances, Id, EmployeeId), 
+            LeaveBalances, 
             EmployeeId, LeaveTypeKey, BalanceDays
           )
         );
         ClearCollect(colLeaveRequests, 
           ShowColumns(
-            AddColumns(LeaveRequests, Id, ID), 
-            Id, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
+            LeaveRequests, 
+            ID, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
           )
         );
         Set(myTotalBalance, Sum(Filter(colLeaveBalances, EmployeeId = currentUserId), BalanceDays));
