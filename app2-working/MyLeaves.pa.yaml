@@ -5,8 +5,8 @@ Screens:
         =Set(isLoading, true);
         ClearCollect(colLeaveRequests, 
           ShowColumns(
-            AddColumns(LeaveRequests, "Id", ID), 
-            "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+            AddColumns(LeaveRequests, Id, ID), 
+            Id, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
           )
         );
         ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId));
@@ -33,8 +33,8 @@ Screens:
               =Set(isLoading, true);
               ClearCollect(colLeaveRequests, 
                 ShowColumns(
-                  AddColumns(LeaveRequests, "Id", ID), 
-                  "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+                  AddColumns(LeaveRequests, Id, ID), 
+                  Id, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
                 )
               );
               ClearCollect(colMyLeaves, Filter(colLeaveRequests, EmployeeId = currentUserId));

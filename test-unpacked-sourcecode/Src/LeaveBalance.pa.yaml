@@ -5,8 +5,8 @@ Screens:
         =Set(isLoading, true);
         ClearCollect(colLeaveBalances, 
           ShowColumns(
-            AddColumns(LeaveBalances, "Id", EmployeeId), 
-            "EmployeeId", "LeaveTypeKey", "BalanceDays"
+            AddColumns(LeaveBalances, Id, EmployeeId), 
+            EmployeeId, LeaveTypeKey, BalanceDays
           )
         );
         Set(selectedLeaveType, Blank());

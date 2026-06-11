@@ -5,8 +5,8 @@ Screens:
         =Set(isLoading, true);
         ClearCollect(colLeaveRequests,
           ShowColumns(
-            AddColumns(LeaveRequests, "Id", ID),
-            "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+            AddColumns(LeaveRequests, Id, ID),
+            Id, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
           )
         );
         Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
@@ -57,14 +57,14 @@ Screens:
                 );
                 ClearCollect(colLeaveRequests,
                   ShowColumns(
-                    AddColumns(LeaveRequests, "Id", ID),
-                    "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+                    AddColumns(LeaveRequests, Id, ID),
+                    Id, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
                   )
                 );
                 ClearCollect(colLeaveBalances, 
                   ShowColumns(
-                    AddColumns(LeaveBalances, "Id", EmployeeId), 
-                    "EmployeeId", "LeaveTypeKey", "BalanceDays"
+                    AddColumns(LeaveBalances, Id, EmployeeId), 
+                    EmployeeId, LeaveTypeKey, BalanceDays
                   )
                 );
                 Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
@@ -124,8 +124,8 @@ Screens:
                       Patch(LeaveRequests, LookUp(LeaveRequests, ID = RequestsGrid.Selected.Id), {Status: "Rejected", RejectionReason: rejectReason});
                       ClearCollect(colLeaveRequests,
                         ShowColumns(
-                          AddColumns(LeaveRequests, "Id", ID),
-                          "Id", "EmployeeId", "LeaveTypeKey", "FromDate", "ToDate", "Days", "Status", "ManagerId", "SubmittedOn", "Reason", "RejectionReason"
+                          AddColumns(LeaveRequests, Id, ID),
+                          Id, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
                         )
                       );
                       Set(showRejectModal, false);
