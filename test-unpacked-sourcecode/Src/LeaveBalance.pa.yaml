@@ -3,12 +3,7 @@ Screens:
     Properties:
       OnVisible: |-
         =Set(isLoading, true);
-        ClearCollect(colLeaveBalances, 
-          ShowColumns(
-            LeaveBalances, 
-            EmployeeId, LeaveTypeKey, BalanceDays
-          )
-        );
+        ClearCollect(colLeaveBalances, LeaveBalances);
         Set(selectedLeaveType, Blank());
         Set(isLoading, false);
     Children:

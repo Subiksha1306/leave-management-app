@@ -3,18 +3,8 @@ Screens:
     Properties:
       OnVisible: |-
         =Set(isLoading, true);
-        ClearCollect(colLeaveBalances, 
-          ShowColumns(
-            LeaveBalances, 
-            EmployeeId, LeaveTypeKey, BalanceDays
-          )
-        );
-        ClearCollect(colLeaveRequests, 
-          ShowColumns(
-            LeaveRequests, 
-            ID, EmployeeId, LeaveTypeKey, FromDate, ToDate, Days, Status, ManagerId, SubmittedOn, Reason, RejectionReason
-          )
-        );
+        ClearCollect(colLeaveBalances, LeaveBalances);
+        ClearCollect(colLeaveRequests, LeaveRequests);
         Set(myTotalBalance, Sum(Filter(colLeaveBalances, EmployeeId = currentUserId), BalanceDays));
         ClearCollect(colMyRecentRequests, Filter(colLeaveRequests, EmployeeId = currentUserId));
         ClearCollect(colQuickActions, Table({Key: "ApplyLeave", Label: "Apply Leave"}, {Key: "MyLeaves", Label: "My Leaves"}));
