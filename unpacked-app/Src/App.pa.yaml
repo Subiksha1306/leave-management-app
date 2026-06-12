@@ -68,6 +68,12 @@ App:
         )
       );
 
+      // Pre-define schemas locally to prevent compiler errors if SharePoint connections are offline/authorizing
+      ClearCollect(colLeaveTypes, Table({ID: 1, Title: "", Key: "", DisplayName: ""}));
+      ClearCollect(colEmployees, Table({ID: 1, Title: "", EmployeeId: 1, Email: "", ManagerId: 1, DisplayName: ""}));
+      ClearCollect(colLeaveBalances, Table({ID: 1, Title: "", EmployeeId: 1, LeaveTypeKey: "", BalanceDays: 1}));
+      ClearCollect(colLeaveRequests, Table({ID: 1, Title: "", EmployeeId: 1, LeaveTypeKey: "", FromDate: Today(), ToDate: Today(), Days: 1, Status: "", ManagerId: 1, SubmittedOn: Now(), Reason: "", RejectionReason: ""}));
+
       // Read data from SharePoint lists into local collections
       ClearCollect(colLeaveTypes, AddColumns(LeaveTypes, DisplayName, Title));
       ClearCollect(colEmployees, AddColumns(Employees, DisplayName, Title));
