@@ -4,7 +4,6 @@ Screens:
       OnVisible: |-
         =Set(isLoading, true);
         ClearCollect(colLeaveRequests, LeaveRequests);
-        Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
         Set(showRejectModal, false);
         Set(rejectReason, "");
         Set(isLoading, false);
@@ -25,7 +24,7 @@ Screens:
             Y: =70
             Width: =1200
             Height: =500
-            Items: =ManagerQueue
+            Items: =Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId)
       - ApproveButton:
           Control: ModernButton
           Properties:
@@ -52,7 +51,6 @@ Screens:
                 );
                 ClearCollect(colLeaveRequests, LeaveRequests);
                 ClearCollect(colLeaveBalances, LeaveBalances);
-                Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
                 Set(isLoading, false);
                 Notify("Request approved", NotificationType.Success)
               )
@@ -109,7 +107,6 @@ Screens:
                       Patch(LeaveRequests, LookUp(LeaveRequests, ID = RequestsGrid.Selected.ID), {Status: "Rejected", RejectionReason: rejectReason});
                       ClearCollect(colLeaveRequests, LeaveRequests);
                       Set(showRejectModal, false);
-                      Set(ManagerQueue, Filter(colLeaveRequests, Status = "Pending" && ManagerId = currentUserId));
                       Set(isLoading, false);
                       Notify("Request rejected", NotificationType.Success)
                     )
