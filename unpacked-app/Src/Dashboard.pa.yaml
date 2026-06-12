@@ -22,6 +22,7 @@ Screens:
           Control: ModernCard
           Properties:
             Title: ="Leave Balance"
+            Subtitle: =Text(myTotalBalance) & " days remaining"
             X: =16
             Y: =56
             Width: =320
